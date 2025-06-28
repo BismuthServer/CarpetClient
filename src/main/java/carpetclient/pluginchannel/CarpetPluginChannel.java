@@ -6,19 +6,28 @@ import carpetclient.coders.zerox53ee71ebe11e.Chunkdata;
 import carpetclient.bugfix.PistonFix;
 import carpetclient.random.RandomtickDisplay;
 import carpetclient.util.CustomCrafting;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.ornithemc.osl.networking.api.client.ClientConnectionEvents;
 import net.ornithemc.osl.networking.api.client.ClientPlayNetworking;
 import carpetclient.coders.EDDxample.ShowBoundingBoxes;
 import carpetclient.coders.EDDxample.VillageMarker;
 import carpetclient.rules.CarpetRules;
 import carpetclient.rules.TickRate;
+import net.ornithemc.osl.networking.impl.interfaces.mixin.IClientPlayNetworkHandler;
+
+import java.util.Collections;
+import java.util.Objects;
 
 /*
 Plugin channel class to implement a client server communication between carpet client and carpet server.
  */
 public class CarpetPluginChannel {
     public static final String CARPET_CHANNEL_NAME = "carpet:client";
-//    public static final ImmutableList CARPET_PLUGIN_CHANNEL = ImmutableList.of(CARPET_CHANNEL_NAME);
+	public static final ImmutableList<String> CARPET_PLUGIN_CHANNEL = ImmutableList.of(CARPET_CHANNEL_NAME);
+	protected static final String CHANNEL_REGISTER = "REGISTER";
+	protected static final String CHANNEL_UNREGISTER = "UNREGISTER";
 
     public static final int GUI_ALL_DATA = 0;
     public static final int RULE_REQUEST = 1;
@@ -31,13 +40,17 @@ public class CarpetPluginChannel {
     public static final int CUSTOM_RECIPES = 8;
 
     public static void init() {
-        ClientPlayNetworking.registerListener(CARPET_CHANNEL_NAME, (minecraft, handler, data) -> {
-            data = PacketSplitter.receive(CARPET_CHANNEL_NAME, data);
-            if (data != null) {
-                handleData(data);
-            }
-            return true;
-        });
+		ClientConnectionEvents.LOGIN.register(handler -> {
+			((IClientPlayNetworkHandler) Objects.requireNonNull(handler.getNetworkHandler())).osl$networking$registerServerChannels(Collections.singleton(CARPET_CHANNEL_NAME));
+			Objects.requireNonNull(handler.getNetworkHandler()).sendPacket(new CustomPayloadC2SPacket(CHANNEL_REGISTER, PacketSplitter.getRegistrationData()));
+		});
+		ClientConnectionEvents.DISCONNECT.register(handler -> Objects.requireNonNull(handler.getNetworkHandler()).sendPacket(new CustomPayloadC2SPacket(CHANNEL_UNREGISTER, PacketSplitter.getRegistrationData())));
+		ClientPlayNetworking.registerListener(CARPET_CHANNEL_NAME, (minecraft, handler, data) -> {
+			data = PacketSplitter.receive(CARPET_CHANNEL_NAME, data);
+			if (data == null) return false;
+			handleData(data);
+			return true;
+		});
     }
 
     /**

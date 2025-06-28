@@ -2,15 +2,18 @@ package carpetclient.mixins;
 
 import carpetclient.CarpetClient;
 import carpetclient.Config;
+import carpetclient.gui.chunkgrid.GuiChunkGrid;
 import carpetclient.mixinInterface.AMixinEntityRenderer;
 import carpetclient.mixinInterface.AMixinMinecraft;
 import carpetclient.mixinInterface.AMixinTimer;
 import carpetclient.rules.TickRate;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.Tessellator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.TickTimer;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Window;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,11 +38,23 @@ public abstract class GameRendererMixin implements AMixinEntityRenderer {
     private boolean fixSpectator(LocalClientPlayerEntity player) {
         return player.isSpectator() || (Config.creativeModeNoClip.getValue() && player.isCreative());
     }
-
-    @Inject(method = "render(FJ)V", at = @At("TAIL"))
-    private void onPostRender(float partialTicks, long startTime, CallbackInfo ci) {
-        CarpetClient.onPostRender(partialTicks);
-    }
+	@Inject(method = "render(FJ)V", at = @At(value = "INVOKE", target = "net/minecraft/client/gui/GameGui.render (F)V"))
+	public void render(float tickDelta, long startTime, CallbackInfo ci) {
+		if (this.minecraft.world != null && this.minecraft.player != null) {
+			if (GuiChunkGrid.instance.getMinimapType() != 0) {
+				Window window = new Window(this.minecraft);
+				GuiChunkGrid.instance.renderMinimap(window.getWidth(), window.getHeight());
+			}
+		}
+	}
+	@Inject(method = "render(IFJ)V",at=@At(value = "INVOKE_STRING", target = "net/minecraft/util/profiler/Profiler.swap (Ljava/lang/String;)V", args = "ldc=litParticles"))
+	public void render(int i, float f, long l, CallbackInfo ci) {
+		CarpetClient.onPostRenderEntities(f);
+	}
+	@Inject(method = "render(IFJ)V", at = @At(value = "FIELD", target = "net/minecraft/client/render/GameRenderer.newCamPitch : Z"))
+	private void onPostRender(int anaglyphRenderPass, float tickDelta, long renderTimeLimit, CallbackInfo ci) {
+		CarpetClient.onPostRender(tickDelta);
+	}
 
     /**
      * Get player partial tick for rendering

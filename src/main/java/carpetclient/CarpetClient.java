@@ -28,12 +28,14 @@ public class CarpetClient implements ClientModInitializer {
     @Override
     public void initClient() {
         CarpetPluginChannel.init();
-        Config.load();
         GuiChunkGrid.instance = new GuiChunkGrid();
         Hotkeys.init();
-
+		MinecraftClientEvents.READY.register(this::onReady);
         MinecraftClientEvents.TICK_END.register(this::onTick);
     }
+	private void onReady(Minecraft minecraft) {
+		Config.load();
+	}
 
     private void onTick(Minecraft minecraft) {
         gameRunnin = minecraft.isIntegratedServerRunning() || minecraft.getCurrentServerEntry() != null;
@@ -66,12 +68,6 @@ public class CarpetClient implements ClientModInitializer {
             } catch (Exception e) {
                 System.out.println(e);
             }
-        }
-    }
-
-    public static void onPostRenderHUD(int screenWidth, int screenHeight) {
-        if (GuiChunkGrid.instance.getMinimapType() != 0) {
-            GuiChunkGrid.instance.renderMinimap(screenWidth, screenHeight);
         }
     }
 
