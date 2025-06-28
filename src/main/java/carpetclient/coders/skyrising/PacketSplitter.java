@@ -5,11 +5,14 @@
 
 package carpetclient.coders.skyrising;
 
+import com.google.common.base.Charsets;
 import io.netty.buffer.Unpooled;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.network.PacketByteBuf;
 import net.ornithemc.osl.networking.api.client.ClientPlayNetworking;
+
+import static carpetclient.pluginchannel.CarpetPluginChannel.CARPET_PLUGIN_CHANNEL;
 
 public class PacketSplitter {
     public static final int MAX_TOTAL_PER_PACKET = 32767;
@@ -68,4 +71,14 @@ public class PacketSplitter {
             return null;
         }
     }
+	public static PacketByteBuf getRegistrationData()
+	{
+		PacketByteBuf buff = new PacketByteBuf(Unpooled.buffer());
+		String channelString = String.join("\u0000", CARPET_PLUGIN_CHANNEL);
+
+		byte[] bytes = channelString.getBytes(Charsets.UTF_8);
+
+		buff.writeBytes(bytes);
+		return buff;
+	}
 }

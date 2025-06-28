@@ -188,7 +188,7 @@ public class GuiChunkGrid extends Screen {
     public void handleMouse() {
         super.handleMouse();
         int scroll = Mouse.getEventDWheel();
-        if (scroll != 0) controller.scroll(scroll / 100);
+        if (scroll != 0) controller.scroll(scroll>0?1:-1);
     }
 
     @Override

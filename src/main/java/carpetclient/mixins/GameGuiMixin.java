@@ -17,10 +17,6 @@ import com.llamalad7.mixinextras.sugar.Local;
  */
 @Mixin(GameGui.class)
 public class GameGuiMixin {
-    @Inject(method = "render", at = @At("TAIL"))
-    private void postRender(float partialTicks, CallbackInfo ci, @Local Window window) {
-        CarpetClient.onPostRenderHUD(window.getWidth(), window.getHeight());
-    }
 
     @Inject(method = "renderScoreboardObjective", at = @At("HEAD"), cancellable = true)
     private void toggleScoreboard(ScoreboardObjective objective, Window scaledRes, CallbackInfo ci) {

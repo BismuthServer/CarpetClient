@@ -22,9 +22,4 @@ public class WorldRendererMixin {
     public void notifyLightSet(BlockPos pos, CallbackInfo ci) {
         ci.cancel();
     }
-
-    @Inject(method = "renderEntities", at = @At("TAIL"))
-    private void postRenderEntities(Entity camera, Culler culler, float partialTicks, CallbackInfo ci) {
-        CarpetClient.onPostRenderEntities(partialTicks);
-    }
 }

@@ -139,7 +139,7 @@ public class Config {
         // obj.addProperty("randomtickingChunksVisualizer", randomtickingChunksVisualizer.getValue());
         obj.addProperty("creativeModeNoClip", creativeModeNoClip.getValue());
         obj.addProperty("fastCrafting", fastCrafting.getValue());
-        obj.addProperty("carefulBreak", fastCrafting.getValue());
+        obj.addProperty("carefulBreak", carefulBreak.getValue());
 
         obj.addProperty("lines", villageMarkerLines.getValue());
         obj.addProperty("golem", villageMarkerGolem.getValue());
