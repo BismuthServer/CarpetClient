@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import java.util.HashMap;
 import java.util.Map;
 
+import carpetclient.pluginchannel.CarpetPluginChannel;
 import net.ornithemc.osl.core.api.util.NamespacedIdentifier;
 import net.ornithemc.osl.networking.api.PacketBuffer;
 import net.ornithemc.osl.networking.api.client.ClientPlayNetworking;
@@ -29,10 +30,8 @@ public class PacketSplitter {
             buf.resetWriterIndex();
             if (offset == 0) buf.writeVarInt(len);
             buf.writeBytes(packet, thisLen);
-            if (always) {
+            if (always || CarpetPluginChannel.REGISTERED_CHANNELS.contains(channel)) {
                 ClientPlayNetworking.sendNoCheck(channel, buf);
-            } else {
-                ClientPlayNetworking.send(channel, buf);
             }
         }
         packet.release();

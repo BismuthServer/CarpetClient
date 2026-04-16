@@ -5,6 +5,8 @@ import carpetclient.coders.skyrising.PacketSplitter;
 import carpetclient.coders.zerox53ee71ebe11e.Chunkdata;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 import carpetclient.CarpetClient;
 import carpetclient.bugfix.PistonFix;
@@ -33,6 +35,8 @@ public class CarpetPluginChannel {
     public static final NamespacedIdentifier CARPET_CLIENT_CHANNEL = StringChannelIdentifierParser.fromString("carpet:client");
     public static final NamespacedIdentifier CARPET_MINE_CHANNEL = StringChannelIdentifierParser.fromString("carpet:mine");
 
+    public static final Set<NamespacedIdentifier> REGISTERED_CHANNELS = new HashSet<>();
+
     public static final int GUI_ALL_DATA = 0;
     public static final int RULE_REQUEST = 1;
     public static final int VILLAGE_MARKERS = 2;
@@ -44,12 +48,20 @@ public class CarpetPluginChannel {
     public static final int CUSTOM_RECIPES = 8;
 
     public static void init() {
+        initChannelRegistration();
+        initCarpetChannels();
+    }
+
+    private static void initChannelRegistration() {
+        // mimic LiteLoader since that is what carpet server expects
         ChannelRegistry.register(REGISTER_CHANNEL);
         ChannelRegistry.register(UNREGISTER_CHANNEL);
 
         ClientConnectionEvents.LOGIN.register(minecraft -> {
+            REGISTERED_CHANNELS.clear();
+
             ClientPlayNetworking.sendNoCheck(REGISTER_CHANNEL, buffer -> {
-                String channels = String.join("\0000",
+                String channels = String.join("\u0000",
                     StringChannelIdentifierParser.toString(CARPET_CLIENT_CHANNEL)
                 );
 
@@ -57,8 +69,10 @@ public class CarpetPluginChannel {
             });
         });
         ClientConnectionEvents.DISCONNECT.register(minecraft -> {
+            REGISTERED_CHANNELS.clear();
+
             ClientPlayNetworking.sendNoCheck(UNREGISTER_CHANNEL, buffer -> {
-                String channels = String.join("\0000",
+                String channels = String.join("\u0000",
                         StringChannelIdentifierParser.toString(CARPET_CLIENT_CHANNEL)
                 );
 
@@ -66,6 +80,35 @@ public class CarpetPluginChannel {
             });
         });
 
+        ClientPlayNetworking.registerListener(REGISTER_CHANNEL, (ctx, data) -> {
+            int len = data.readableBytes();
+            byte[] bytes = new byte[len];
+
+            data.readBytes(bytes);
+
+            String channelstring = new String(bytes, StandardCharsets.UTF_8);
+            String[] channels = channelstring.split("\u0000");
+
+            for (String channel : channels) {
+                REGISTERED_CHANNELS.add(StringChannelIdentifierParser.fromString(channel));
+            }
+        });
+        ClientPlayNetworking.registerListener(UNREGISTER_CHANNEL, (ctx, data) -> {
+            int len = data.readableBytes();
+            byte[] bytes = new byte[len];
+
+            data.readBytes(bytes);
+
+            String channelstring = new String(bytes, StandardCharsets.UTF_8);
+            String[] channels = channelstring.split("\u0000");
+
+            for (String channel : channels) {
+                REGISTERED_CHANNELS.remove(StringChannelIdentifierParser.fromString(channel));
+            }
+        });
+    }
+
+    private static void initCarpetChannels() {
         ChannelRegistry.register(CARPET_CLIENT_CHANNEL);
         ChannelRegistry.register(CARPET_MINE_CHANNEL, false, true);
 
