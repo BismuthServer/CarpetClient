@@ -3,13 +3,18 @@ package carpetclient.pluginchannel;
 
 import carpetclient.coders.skyrising.PacketSplitter;
 import carpetclient.coders.zerox53ee71ebe11e.Chunkdata;
+
+import java.nio.charset.StandardCharsets;
+
+import carpetclient.CarpetClient;
 import carpetclient.bugfix.PistonFix;
 import carpetclient.random.RandomtickDisplay;
 import carpetclient.util.CustomCrafting;
 import net.ornithemc.osl.core.api.util.NamespacedIdentifier;
-import net.ornithemc.osl.networking.api.ChannelIdentifiers;
 import net.ornithemc.osl.networking.api.ChannelRegistry;
 import net.ornithemc.osl.networking.api.PacketBuffer;
+import net.ornithemc.osl.networking.api.StringChannelIdentifierParser;
+import net.ornithemc.osl.networking.api.client.ClientConnectionEvents;
 import net.ornithemc.osl.networking.api.client.ClientPlayNetworking;
 import carpetclient.coders.EDDxample.ShowBoundingBoxes;
 import carpetclient.coders.EDDxample.VillageMarker;
@@ -20,8 +25,13 @@ import carpetclient.rules.TickRate;
 Plugin channel class to implement a client server communication between carpet client and carpet server.
  */
 public class CarpetPluginChannel {
-    public static final NamespacedIdentifier CARPET_CLIENT_CHANNEL = ChannelIdentifiers.from("carpet", "client");
-    public static final NamespacedIdentifier CARPET_MINE_CHANNEL = ChannelIdentifiers.from("carpet", "mine");
+    // liteloader channels carpet uses to check for carpet clients
+    public static final NamespacedIdentifier REGISTER_CHANNEL = StringChannelIdentifierParser.fromString("REGISTER");
+    public static final NamespacedIdentifier UNREGISTER_CHANNEL = StringChannelIdentifierParser.fromString("UNREGISTER");
+
+    // carpet channels
+    public static final NamespacedIdentifier CARPET_CLIENT_CHANNEL = StringChannelIdentifierParser.fromString("carpet:client");
+    public static final NamespacedIdentifier CARPET_MINE_CHANNEL = StringChannelIdentifierParser.fromString("carpet:mine");
 
     public static final int GUI_ALL_DATA = 0;
     public static final int RULE_REQUEST = 1;
@@ -34,6 +44,28 @@ public class CarpetPluginChannel {
     public static final int CUSTOM_RECIPES = 8;
 
     public static void init() {
+        ChannelRegistry.register(REGISTER_CHANNEL);
+        ChannelRegistry.register(UNREGISTER_CHANNEL);
+
+        ClientConnectionEvents.LOGIN.register(minecraft -> {
+            ClientPlayNetworking.sendNoCheck(REGISTER_CHANNEL, buffer -> {
+                String channels = String.join("\0000",
+                    StringChannelIdentifierParser.toString(CARPET_CLIENT_CHANNEL)
+                );
+
+                buffer.writeBytes(channels.getBytes(StandardCharsets.UTF_8));
+            });
+        });
+        ClientConnectionEvents.DISCONNECT.register(minecraft -> {
+            ClientPlayNetworking.sendNoCheck(UNREGISTER_CHANNEL, buffer -> {
+                String channels = String.join("\0000",
+                        StringChannelIdentifierParser.toString(CARPET_CLIENT_CHANNEL)
+                );
+
+                buffer.writeBytes(channels.getBytes(StandardCharsets.UTF_8));
+            });
+        });
+
         ChannelRegistry.register(CARPET_CLIENT_CHANNEL);
         ChannelRegistry.register(CARPET_MINE_CHANNEL, false, true);
 
