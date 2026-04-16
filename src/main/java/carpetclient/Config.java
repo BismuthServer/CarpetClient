@@ -9,6 +9,8 @@ import carpetclient.gui.chunkgrid.ChunkGridStyle;
 import carpetclient.gui.chunkgrid.GuiChunkGrid;
 import carpetclient.random.RandomtickDisplay;
 import carpetclient.rules.TickRate;
+import net.minecraft.client.Minecraft;
+
 import com.google.gson.*;
 
 import java.io.File;
@@ -160,7 +162,7 @@ public class Config {
         }
     }
 
-    public static void load() {
+    public static void load(Minecraft minecraft) {
         String file = "config/carpetclient.cfg";
         Gson gson = new Gson();
         JsonParser jsonParser = new JsonParser();
@@ -209,6 +211,7 @@ public class Config {
                 GuiChunkGrid.style = gson.fromJson(jsonObject.get("chunkGridStyle"), ChunkGridStyle.class);
             }
         } catch (Exception e) {
+            CarpetClient.LOGGER.info("error parsing carpet client config", e);
         }
     }
 

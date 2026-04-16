@@ -1,7 +1,5 @@
 package carpetclient;
 
-import java.util.List;
-
 import carpetclient.coders.EDDxample.PistonHelper;
 import carpetclient.coders.EDDxample.ShowBoundingBoxes;
 import carpetclient.coders.EDDxample.VillageMarker;
@@ -14,7 +12,6 @@ import net.ornithemc.osl.entrypoints.api.client.ClientModInitializer;
 import net.ornithemc.osl.lifecycle.api.client.MinecraftClientEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.Window;
-import net.minecraft.network.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,11 +24,12 @@ public class CarpetClient implements ClientModInitializer {
 
     @Override
     public void initClient() {
-        CarpetPluginChannel.init();
-        Config.load();
         GuiChunkGrid.instance = new GuiChunkGrid();
+
+        CarpetPluginChannel.init();
         Hotkeys.init();
 
+        MinecraftClientEvents.START.register(Config::load);
         MinecraftClientEvents.TICK_END.register(this::onTick);
     }
 
