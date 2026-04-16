@@ -72,7 +72,7 @@ public class ClientPlayerInteractionManagerMixin {
         float f = (float) (vec.x - (double) pos.getX());
         float f1 = (float) (vec.y - (double) pos.getY());
         float f2 = (float) (vec.z - (double) pos.getZ());
-        ItemStack item = player.getHandStack(hand);
+        ItemStack item = player.getItemInHand(hand);
         if (Config.accurateBlockPlacement) f = blockRotation(player, pos, f, direction, item);
         connection.sendPacket(new PlayerUseBlockC2SPacket(pos, direction, hand, f, f1, f2));
     }
@@ -239,7 +239,7 @@ public class ClientPlayerInteractionManagerMixin {
     /**
      * Fixes the mining packets for carpet client users to add careful break and remove blocks shortly reappearing when mining slower then instant mine.
      */
-    @Redirect(method = "updateBlockMining", at = @At(value = "INVOKE", target = "net/minecraft/client/network/handler/ClientPlayNetworkHandler.sendPacket(Lnet/minecraft/network/packet/Packet;)V", ordinal = 1))
+    @Redirect(method = "tickBlockMining", at = @At(value = "INVOKE", target = "net/minecraft/client/network/handler/ClientPlayNetworkHandler.sendPacket(Lnet/minecraft/network/packet/Packet;)V", ordinal = 1))
     public void miningPacketEnd(ClientPlayNetworkHandler connection,
                              Packet<?> packetIn, // sendPacket vars
                              BlockPos loc, Direction face // processRightClickBlock vars

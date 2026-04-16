@@ -80,9 +80,9 @@ public class ShowBoundingBoxes {
         if (group == null) return;
         
         LocalClientPlayerEntity player = Minecraft.getInstance().player;
-        final double d0 = player.prevTickX + (player.x - player.prevTickX) * partialTicks;
-        final double d1 = player.prevTickY + (player.y - player.prevTickY) * partialTicks;
-        final double d2 = player.prevTickZ + (player.z - player.prevTickZ) * partialTicks;
+        final double d0 = player.prevX + (player.x - player.prevX) * partialTicks;
+        final double d1 = player.prevY + (player.y - player.prevY) * partialTicks;
+        final double d2 = player.prevZ + (player.z - player.prevZ) * partialTicks;
 
         RenderUtils.prepareOpenGL(true);
 
@@ -96,7 +96,7 @@ public class ShowBoundingBoxes {
             }
         }
 
-        if (player.dimensionId == dimension) {
+        if (player.dimension == dimension) {
             for (int i = 0; i < group.length; i++) {
                 if (!show[i]) continue;
                 ArrayList<StructureBox> array = group[i];
@@ -157,7 +157,7 @@ public class ShowBoundingBoxes {
             
             ArrayList<NbtCompound> allBoxes = new ArrayList<>();
             for (int i = 0; i < nbttaglist.size(); i++) {
-                NbtList boxList = (NbtList) nbttaglist.get(i);
+                NbtList boxList = (NbtList) nbttaglist.getElement(i);
                 for (int j = 0; j < boxList.size(); j++) {
                     allBoxes.add(boxList.getCompound(j));
                 }

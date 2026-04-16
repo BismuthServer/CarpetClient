@@ -133,7 +133,7 @@ public abstract class PistonBaseBlockMixin extends FacingBlock {
     public boolean use(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!Config.pistonVisualizer.getValue()) return false;
 
-        boolean flag = playerIn.getHandStack(InteractionHand.MAIN_HAND).isEmpty() && playerIn.getHandStack(InteractionHand.MAIN_HAND).getItem() == Items.AIR;
+        boolean flag = playerIn.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && playerIn.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.AIR;
 
         if (worldIn.isClient && flag) {
             boolean extending = !(Boolean) state.get(PistonBaseBlock.EXTENDED);

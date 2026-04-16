@@ -64,7 +64,7 @@ public class RedstoneHelper {
     private boolean isPowerSourceAt(WorldView worldIn, BlockPos pos, Direction side) {
         BlockPos blockpos = pos.offset(side);
         BlockState iblockstate = worldIn.getBlockState(blockpos);
-        boolean normalCube = iblockstate.isConductor();
+        boolean normalCube = iblockstate.isSolid();
 
         if (canConnectTo(iblockstate, side, false)) {
             return true;
@@ -100,9 +100,9 @@ public class RedstoneHelper {
     public static void draw(float partialTicks) {
         if (Config.pistonVisualizer.getValue()) {
             final LocalClientPlayerEntity player = Minecraft.getInstance().player;
-            final double d0 = player.prevTickX + (player.x - player.prevTickX) * partialTicks;
-            final double d1 = player.prevTickY + (player.y - player.prevTickY) * partialTicks;
-            final double d2 = player.prevTickZ + (player.z - player.prevTickZ) * partialTicks;
+            final double d0 = player.prevX + (player.x - player.prevX) * partialTicks;
+            final double d1 = player.prevY + (player.y - player.prevY) * partialTicks;
+            final double d2 = player.prevZ + (player.z - player.prevZ) * partialTicks;
             final EntityRenderDispatcher rm = Minecraft.getInstance().getEntityRenderDispatcher();
             BlockPos pos;
 
@@ -241,7 +241,7 @@ public class RedstoneHelper {
         public int getRedstonePower(BlockPos pos, Direction facing) {
             BlockState iblockstate = this.getBlockState(pos);
 //            if(iblockstate.getBlock() instanceof BlockRedstoneWire) return 0;
-            return iblockstate.isConductor() ? getStrongPower(pos) : iblockstate.getBlock().getSignal(iblockstate, null, pos, facing);
+            return iblockstate.isSolid() ? getStrongPower(pos) : iblockstate.getBlock().getSignal(iblockstate, null, pos, facing);
         }
 
         public int getStrongPower(BlockPos pos, Direction facing)
@@ -344,11 +344,11 @@ public class RedstoneHelper {
                     l = this.getMaxCurrentStrength(blockpos, l);
                 }
 
-                if (getBlockState(blockpos).isConductor() && !getBlockState(pos1.up()).isConductor()) {
+                if (getBlockState(blockpos).isSolid() && !getBlockState(pos1.up()).isSolid()) {
                     if (flag && pos1.getY() >= pos2.getY()) {
                         l = this.getMaxCurrentStrength(blockpos.up(), l);
                     }
-                } else if (!getBlockState(blockpos).isConductor() && flag && pos1.getY() <= pos2.getY()) {
+                } else if (!getBlockState(blockpos).isSolid() && flag && pos1.getY() <= pos2.getY()) {
                     l = this.getMaxCurrentStrength(blockpos.down(), l);
                 }
             }

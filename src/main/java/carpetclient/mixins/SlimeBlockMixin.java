@@ -42,7 +42,7 @@ public class SlimeBlockMixin extends TransparentBlock {
 
         boolean isSticky = false;
         boolean extending = true;
-        boolean flag = playerIn.getHandStack(InteractionHand.MAIN_HAND).isEmpty() && playerIn.getHandStack(InteractionHand.MAIN_HAND).getItem() == Items.AIR;
+        boolean flag = playerIn.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && playerIn.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.AIR;
 
         if (worldIn.isClient && flag) {
             pos = pos.offset(facing);

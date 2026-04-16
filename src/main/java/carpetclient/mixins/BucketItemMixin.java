@@ -50,7 +50,7 @@ public class BucketItemMixin extends Item {
     @Inject(method = "startUsing", at = @At("HEAD"), cancellable = true)
     public void onItemRightClick(World worldIn, PlayerEntity playerIn, InteractionHand handIn, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
         boolean flag = this.liquid == Blocks.AIR;
-        ItemStack itemstack = playerIn.getHandStack(handIn);
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
         HitResult raytraceresult = this.getUseTarget(worldIn, playerIn, flag);
 
         if (raytraceresult == null) {
@@ -63,7 +63,7 @@ public class BucketItemMixin extends Item {
             if (!worldIn.canModify(playerIn, blockpos)) {
                 cir.setReturnValue(new InteractionResultHolder<ItemStack>(InteractionResult.FAIL, itemstack));
             } else if (flag) {
-                if (!playerIn.canUseItem(blockpos.offset(raytraceresult.face), raytraceresult.face, itemstack)) {
+                if (!playerIn.canUseItemOn(blockpos.offset(raytraceresult.face), raytraceresult.face, itemstack)) {
                     cir.setReturnValue(new InteractionResultHolder<ItemStack>(InteractionResult.FAIL, itemstack));
                 } else {
                     BlockState iblockstate = worldIn.getBlockState(blockpos);
@@ -95,7 +95,7 @@ public class BucketItemMixin extends Item {
                 boolean flag1 = worldIn.getBlockState(blockpos).getBlock().canBeReplaced(worldIn, blockpos);
                 BlockPos blockpos1 = flag1 && raytraceresult.face == Direction.UP ? blockpos : blockpos.offset(raytraceresult.face);
 
-                if (!playerIn.canUseItem(blockpos1, raytraceresult.face, itemstack)) {
+                if (!playerIn.canUseItemOn(blockpos1, raytraceresult.face, itemstack)) {
                     cir.setReturnValue(new InteractionResultHolder<ItemStack>(InteractionResult.FAIL, itemstack));
                 } else if (this.place(playerIn, worldIn, blockpos1)) {
                     if (!worldIn.isClient) {

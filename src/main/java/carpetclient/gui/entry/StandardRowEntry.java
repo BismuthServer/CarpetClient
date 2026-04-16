@@ -75,12 +75,12 @@ public abstract class StandardRowEntry<T> extends BaseEntry<T> implements IToolt
     public boolean mouseClicked(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
         Minecraft mc = Minecraft.getInstance();
 
-        if (this.reset && this.resetButton.isMouseOver(mc, mouseX, mouseY)) {
+        if (this.reset && this.resetButton.mouseClicked(mc, mouseX, mouseY)) {
             this.resetButton.playClickSound(mc.getSoundManager());
             this.performResetAction();
             return true;
         }
-        if (this.info && this.infoButton.isMouseOver(mc, mouseX, mouseY)) {
+        if (this.info && this.infoButton.mouseClicked(mc, mouseX, mouseY)) {
             this.infoButton.playClickSound(mc.getSoundManager());
             this.performInfoAction();
             return true;

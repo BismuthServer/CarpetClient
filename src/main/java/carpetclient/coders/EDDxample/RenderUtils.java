@@ -1,11 +1,11 @@
 package carpetclient.coders.EDDxample;
 
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tessellator;
 import java.awt.Color;
+import net.minecraft.client.render.platform.GLX;
+import net.minecraft.client.render.platform.GlStateManager;
+import net.minecraft.client.render.vertex.BufferBuilder;
+import net.minecraft.client.render.vertex.DefaultVertexFormat;
+import net.minecraft.client.render.vertex.Tesselator;
 import net.minecraft.client.render.world.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -50,21 +50,21 @@ public class RenderUtils {
 
     private static void drawDot(double Ax, double Ay, double Az, Color color) {
         final int RED = color.getRed(), GREEN = color.getGreen(), BLUE = color.getBlue();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vertexbuffer = tessellator.getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder vertexbuffer = tesselator.getBuffer();
         vertexbuffer.begin(0, DefaultVertexFormat.POSITION_COLOR);
         vertexbuffer.vertex(Ax, Ay, Az).color(RED, GREEN, BLUE, 255).nextVertex();
-        tessellator.end();
+        tesselator.end();
     }
 
     public static void drawline(double d0, double d1, double d2, double Ax, double Ay, double Az, double Bx, double By, double Bz, Color color) {
         final int RED = color.getRed(), GREEN = color.getGreen(), BLUE = color.getBlue();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vertexbuffer = tessellator.getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder vertexbuffer = tesselator.getBuffer();
         vertexbuffer.begin(3, DefaultVertexFormat.POSITION_COLOR);
         vertexbuffer.vertex(Ax - d0, Ay - d1, Az - d2).color(RED, GREEN, BLUE, 255).nextVertex();
         vertexbuffer.vertex(Bx - d0, By - d1, Bz - d2).color(RED, GREEN, BLUE, 255).nextVertex();
-        tessellator.end();
+        tesselator.end();
     }
 
     public static void drawSphere(double radius, int sphereDensity, double d0, double d1, double d2, double Ax, double Ay, double Az, Color color, int mode) {
@@ -127,7 +127,7 @@ public class RenderUtils {
 
     public static void drawGhostBox(double dx, double dy, double dz, double x1, double y1, double z1, double x2, double y2, double z2, Color color) {
         int C = color.getRed(), M = color.getGreen(), Y = color.getBlue();
-        Box aabb = new Box(x1, y1, z1, x2, y2, z2).move(-dx, -dy, -dz).expand(0.002);
+        Box aabb = new Box(x1, y1, z1, x2, y2, z2).moved(-dx, -dy, -dz).expand(0.002);
         WorldRenderer.renderShape(aabb, C / 255, M / 255, Y / 255, 0.2F);
     }
 }

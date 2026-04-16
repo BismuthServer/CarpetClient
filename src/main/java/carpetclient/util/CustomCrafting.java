@@ -54,7 +54,7 @@ public class CustomCrafting {
 
         NbtList nbttaglist = nbt.getList("recipeList", 10);
         for (int i = 0; i < nbttaglist.size(); i++) {
-            NbtCompound ruleNBT = (NbtCompound) nbttaglist.get(i);
+            NbtCompound ruleNBT = (NbtCompound) nbttaglist.getElement(i);
 
             String name = ruleNBT.getString("name");
             String recipe = ruleNBT.getString("recipe");
@@ -142,7 +142,7 @@ public class CustomCrafting {
                     }
                 }
 
-                recipelist1.m_0017685(irecipe);
+                recipelist1.add(irecipe);
             }
         }
 

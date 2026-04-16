@@ -20,13 +20,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LocalClientPlayerEntityMixin extends ClientPlayerEntity {
 
     @Shadow
-    protected abstract boolean isBlockAtPosFullCube(BlockPos pos);
+    protected abstract boolean canSurvive(BlockPos pos);
 
     public LocalClientPlayerEntityMixin(World worldIn, GameProfile playerProfile) {
         super(worldIn, playerProfile);
     }
 
-    @Inject(method = "tickAi", at = @At(value = "FIELD",
+    @Inject(method = "mobTick", at = @At(value = "FIELD",
             target = "Lnet/minecraft/network/packet/c2s/play/PlayerMovementActionC2SPacket$Action;START_FALL_FLYING:Lnet/minecraft/network/packet/c2s/play/PlayerMovementActionC2SPacket$Action;"))
     public void onElytraDeploy(CallbackInfo ci) {
         if (Config.elytraFix.getValue())
@@ -48,14 +48,14 @@ public abstract class LocalClientPlayerEntityMixin extends ClientPlayerEntity {
      * @param pos
      * @param cir
      */
-    @Inject(method = "isBlockAtPosFullCube", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "canSurvive", at = @At("HEAD"), cancellable = true)
     private void adjustIsOpenBlockSpace(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(!this.world.getBlockState(pos).isConductor());
+        cir.setReturnValue(!this.world.getBlockState(pos).isSolid());
     }
 
     private boolean isHeadspaceFree(BlockPos pos, int height) {
         for (int y = 0; y < height; ++y) {
-            if (!isBlockAtPosFullCube(pos.add(0, y, 0))) {
+            if (!canSurvive(pos.add(0, y, 0))) {
                 return false;
             }
         }

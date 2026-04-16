@@ -198,14 +198,14 @@ public class Controller {
      */
     public void home() {
         if (Minecraft.getInstance() == null || Minecraft.getInstance().player == null) return;
-        BlockPos pos = Minecraft.getInstance().player.getSourceBlockPos();
+        BlockPos pos = Minecraft.getInstance().player.getCommandSourceBlockPos();
         view.setX(pos.getX() >> 4);
         view.setY(pos.getZ() >> 4);
 
         debug.setXText(view.getX());
         debug.setZText(view.getY());
 
-        int dimention = minecraftDimentionToIndex(Minecraft.getInstance().player.dimensionId);
+        int dimention = minecraftDimentionToIndex(Minecraft.getInstance().player.dimension);
         debug.setSelectedDimension(dimention);
 
         setTick(lastGametick);
@@ -326,13 +326,13 @@ public class Controller {
         int dimention = 0;
         boolean playerDrawn = false;
 
-        BlockPos pos = Minecraft.getInstance().player.getSourceBlockPos();
+        BlockPos pos = Minecraft.getInstance().player.getCommandSourceBlockPos();
         playerX = x = pos.getX() >> 4;
         playerY = y = pos.getZ() >> 4;
         playerDrawn = true;
 
         if (debug.getMinimapType() == 1) {
-            dimention = minecraftDimentionToIndex(Minecraft.getInstance().player.dimensionId);
+            dimention = minecraftDimentionToIndex(Minecraft.getInstance().player.dimension);
         } else if (debug.getMinimapType() == 2) {
             x = view.getX();
             y = view.getY();

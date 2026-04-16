@@ -43,7 +43,7 @@ public abstract class MinecraftMixin implements IMinecraft, AMixinMinecraft {
     @Shadow
     public LocalClientPlayerEntity player;
     @Shadow
-    private float f_9101272;
+    private float pauseTickDelta;
     @Shadow @Nullable
     public Screen screen;
     @Shadow @Nullable
@@ -60,7 +60,7 @@ public abstract class MinecraftMixin implements IMinecraft, AMixinMinecraft {
 	private float renderPartialTicksPausedPlayer;
 
     @Shadow
-    abstract public boolean isInSingleplayer();
+    abstract public boolean isSingleplayer();
 
     @Override
     public float carpetClient$getRenderPartialTicksPausedPlayer() {
@@ -82,16 +82,16 @@ public abstract class MinecraftMixin implements IMinecraft, AMixinMinecraft {
      *
      * @param ci
      */
-    @Inject(method = "runGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isInSingleplayer()Z"))
+    @Inject(method = "runGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isSingleplayer()Z"))
     private void renderPartialTicksPausing(CallbackInfo ci) {
-        boolean flag = this.isInSingleplayer() && this.screen != null && this.screen.shouldPauseGame() && !this.server.isPublished();
+        boolean flag = this.isSingleplayer() && this.screen != null && this.screen.shouldPauseGame() && !this.server.isPublished();
         if (this.paused != flag) {
             if (this.paused) {
                 // Will be done by vanilla
                 // this.renderPartialTicksPaused = ((AMixinTimer) this.timer).getRenderPartialTicksWorld();
                 this.renderPartialTicksPausedPlayer = ((AMixinTimer) this.timer).carpetClient$getRenderPartialTicksPlayer();
             } else {
-                ((AMixinTimer) this.timer).carpetClient$setRenderPartialTicksWorld(this.f_9101272);
+                ((AMixinTimer) this.timer).carpetClient$setRenderPartialTicksWorld(this.pauseTickDelta);
                 ((AMixinTimer) this.timer).carpetClient$setRenderPartialTicksPlayer(this.renderPartialTicksPausedPlayer);
             }
 
@@ -112,10 +112,10 @@ public abstract class MinecraftMixin implements IMinecraft, AMixinMinecraft {
         if (
             this.world != null && this.player != null && !this.paused &&
             ((AMixinTimer) this.timer).carpetClient$getElapsedTicksPlayer() > 0 &&
-            !this.player.hasVehicle() && !this.player.removed
+            !this.player.isRiding() && !this.player.removed
         ) {
             try {
-                this.world.updateEntity(this.player);
+                this.world.tickEntity(this.player);
             } catch (Throwable e) {
                 CrashReport cr = CrashReport.of(e, "Ticking player");
                 CrashReportCategory crcat = cr.addCategory("Player being ticked");

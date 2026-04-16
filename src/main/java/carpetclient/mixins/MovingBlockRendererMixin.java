@@ -3,8 +3,6 @@ package carpetclient.mixins;
 import carpetclient.Config;
 import carpetclient.util.ITileEntityPiston;
 import carpetclient.util.ITileEntityRenderDispatcher;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tessellator;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MovingBlockEntity;
@@ -12,6 +10,8 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.MovingBlockRenderer;
+import net.minecraft.client.render.vertex.BufferBuilder;
+import net.minecraft.client.render.vertex.Tesselator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +43,7 @@ public abstract class MovingBlockRendererMixin extends BlockEntityRenderer<Movin
             locals = LocalCapture.CAPTURE_FAILHARD
 	)
     private void renderStateModelTE(MovingBlockEntity te, double x, double y, double z, float partialTicks, int destroyStage, float alpha, CallbackInfo ci,
-                                    BlockPos blockpos, BlockState iblockstate, Block block, Tessellator tessellator, BufferBuilder bufferbuilder, World world)
+                                    BlockPos blockpos, BlockState iblockstate, Block block, Tesselator tesselator, BufferBuilder bufferbuilder, World world)
     {
         if (!Config.movableTileEntities)
             return;
@@ -60,7 +60,7 @@ public abstract class MovingBlockRendererMixin extends BlockEntityRenderer<Movin
     )
     private boolean renderStateModelTE(net.minecraft.client.render.block.entity.MovingBlockRenderer renderer, BlockPos pos, BlockState state, BufferBuilder buffer, World world, boolean checkSides)
     {
-        if (Config.movableTileEntities && !((IBufferBuilder) Tessellator.getInstance().getBuilder()).getBuilding())
+        if (Config.movableTileEntities && !((IBufferBuilder) Tesselator.getInstance().getBuffer()).getBuilding())
         {
             BlockEntity carriedTileEntity = ((ITileEntityPiston) this.piston).carpetClient$getCarriedBlockEntity();
             if (carriedTileEntity != null)

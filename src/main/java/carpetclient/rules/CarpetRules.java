@@ -181,7 +181,7 @@ public class CarpetRules {
         Config.tickRate = nbt.getFloat("tickrate");
         NbtList nbttaglist = nbt.getList("ruleList", 10);
         for (int i = 0; i < nbttaglist.size(); i++) {
-            NbtCompound ruleNBT = (NbtCompound) nbttaglist.get(i);
+            NbtCompound ruleNBT = (NbtCompound) nbttaglist.getElement(i);
 
             String rule = ruleNBT.getString("rule");
             String current = ruleNBT.getString("current");

@@ -36,7 +36,7 @@ public class ConfigIntegerEntry extends StandardRowEntry<ConfigIntegerEntry> {
 
     @Override
     protected boolean mouseDown(int x, int y, int button) {
-        if (this.button.isMouseOver(Minecraft.getInstance(), x, y)) {
+        if (this.button.mouseClicked(Minecraft.getInstance(), x, y)) {
             this.button.playClickSound(Minecraft.getInstance().getSoundManager());
             this.performAction();
             return true;

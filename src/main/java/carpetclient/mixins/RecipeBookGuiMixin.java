@@ -21,7 +21,7 @@ public class RecipeBookGuiMixin {
 
     @Shadow  private String prevSearch;
 
-    @Shadow public boolean isVisible(){return false;}
+    @Shadow public boolean isGuiOpen(){return false;}
 
     @Shadow @Final private RecipeBookPage page;
 
@@ -38,7 +38,7 @@ public class RecipeBookGuiMixin {
 
     @Inject(method = "initGui", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/recipebook/RecipeBookGui;searchField:Lnet/minecraft/client/gui/widget/TextFieldWidget;", ordinal = 4, shift = At.Shift.AFTER))
     private void setSearchText(boolean p_193014_1_, CraftingInventory p_193014_2_, CallbackInfo c) {
-        if(!isVisible()){
+        if(!isGuiOpen()){
             memoText = "";
         }
         searchField.setText(memoText);

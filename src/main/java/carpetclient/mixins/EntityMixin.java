@@ -76,7 +76,7 @@ public abstract class EntityMixin {
     /*
     Injection to modify the behavior of player aiming.
      */
-    @Inject(method = "updateLocalPlayerCamera", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;prevPitch:F", opcode = Opcodes.PUTFIELD))
+    @Inject(method = "updateLocalPlayerCamera", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;lastPitch:F", opcode = Opcodes.PUTFIELD))
     public void post(float yaw, float pitch, CallbackInfo ci) {
         snapAim(this.mount, yaw);
     }

@@ -18,7 +18,7 @@ Big thanks from nessie to help add this fix.
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
 
-    @Inject(method = "onLightChanged", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "notifyLightChanged", at = @At("HEAD"), cancellable = true)
     public void notifyLightSet(BlockPos pos, CallbackInfo ci) {
         ci.cancel();
     }

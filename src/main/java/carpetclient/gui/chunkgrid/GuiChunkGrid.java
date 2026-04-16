@@ -2,10 +2,6 @@ package carpetclient.gui.chunkgrid;
 
 import carpetclient.Util;
 import carpetclient.coders.Pokechu22.GuiNumericTextField;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tessellator;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -14,6 +10,10 @@ import java.io.IOException;
 import java.util.Random;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.platform.GlStateManager;
+import net.minecraft.client.render.vertex.BufferBuilder;
+import net.minecraft.client.render.vertex.DefaultVertexFormat;
+import net.minecraft.client.render.vertex.Tesselator;
 
 /**
  * Extensive GUI clas used for Debug Chunk Window
@@ -235,8 +235,8 @@ public class GuiChunkGrid extends Screen {
         chunkgrid.draw(controller.getView(), 0, HEADER_HEIGHT, width, height - HEADER_HEIGHT - FOOTER_HEIGHT);
 
         minecraft.getTextureManager().bind(BACKGROUND_LOCATION);
-        Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buf = tess.getBuilder();
+        Tesselator tess = Tesselator.getInstance();
+        BufferBuilder buf = tess.getBuffer();
 
         // Draw 4 pixel high fading transitions
         GlStateManager.enableBlend();

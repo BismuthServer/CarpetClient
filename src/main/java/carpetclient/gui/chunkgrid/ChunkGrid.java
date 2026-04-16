@@ -1,11 +1,11 @@
 package carpetclient.gui.chunkgrid;
 
 import carpetclient.coders.zerox53ee71ebe11e.Chunkdata;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tessellator;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.platform.GlStateManager;
+import net.minecraft.client.render.vertex.BufferBuilder;
+import net.minecraft.client.render.vertex.DefaultVertexFormat;
+import net.minecraft.client.render.vertex.Tesselator;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Point;
 
@@ -41,8 +41,8 @@ public class ChunkGrid {
         rowCount = (int) Math.ceil((float) height / scale);
         columnCount = (int) Math.ceil((float) width / scale);
 
-        Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buf = tess.getBuilder();
+        Tesselator tess = Tesselator.getInstance();
+        BufferBuilder buf = tess.getBuffer();
 
         GlStateManager.disableTexture();
 
@@ -147,7 +147,7 @@ public class ChunkGrid {
      * @param thisY
      * @param color
      */
-    private void drawSelectionBox(Tessellator tess, BufferBuilder buf, int thisX, int thisY, int color) {
+    private void drawSelectionBox(Tesselator tess, BufferBuilder buf, int thisX, int thisY, int color) {
         int alpha = (color & 0xff000000) >>> 24;
         int red = (color & 0xff0000) >> 16;
         int green = (color & 0xff00) >> 8;
@@ -176,7 +176,7 @@ public class ChunkGrid {
         tess.end();
     }
 
-    private void drawPlayerCross(Tessellator tess, BufferBuilder buf, int thisX, int thisY, int color) {
+    private void drawPlayerCross(Tesselator tess, BufferBuilder buf, int thisX, int thisY, int color) {
         int alpha = (color & 0xff000000) >>> 24;
         int red = (color & 0xff0000) >> 16;
         int green = (color & 0xff00) >> 8;

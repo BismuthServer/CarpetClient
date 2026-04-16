@@ -41,12 +41,12 @@ public class WorldMixin {
      * @param placer
      * @return
      */
-    @Redirect(method = "canPlaceBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;canBuildIn(Lnet/minecraft/util/math/Box;Lnet/minecraft/entity/Entity;)Z"))
+    @Redirect(method = "canPlace", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isUnobstructed(Lnet/minecraft/util/math/Box;Lnet/minecraft/entity/Entity;)Z"))
     private boolean ignoreEntitysWhenPlacingBlocks(World world,
 												   Box bb, @Nullable Entity entityIn, // sub vars
 												   Block blockIn, BlockPos pos, boolean skipCollisionCheck, Direction sidePlacedOn, @Nullable Entity placer// main vars
     ){
-        return Config.ignoreEntityWhenPlacing || world.canBuildIn(bb, entityIn);
+        return Config.ignoreEntityWhenPlacing || world.isUnobstructed(bb, entityIn);
     }
 
     /**
@@ -71,9 +71,9 @@ public class WorldMixin {
      * @param world
      * @param ent
      */
-    @Redirect(method = "tickEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;updateEntity(Lnet/minecraft/entity/Entity;)V"))
+    @Redirect(method = "tickEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;tickEntity(Lnet/minecraft/entity/Entity;)V"))
     private void noPlayerUpdateDuringWorld(World world, Entity ent){
-        if (!(ent instanceof LocalClientPlayerEntity) || ent.hasVehicle())
-            world.updateEntity(ent);
+        if (!(ent instanceof LocalClientPlayerEntity) || ent.isRiding())
+            world.tickEntity(ent);
     }
 }

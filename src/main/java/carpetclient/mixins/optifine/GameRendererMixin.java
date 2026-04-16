@@ -21,7 +21,7 @@ public abstract class GameRendererMixin {
      * generate with entry for this injection point, causing silent(!) injection failure.
      */
     @ModifyArg(method = "renderItemInHand", index = 0, remap = false, require = 0,
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;applyViewBobbing(F)V", remap = true))
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;loadCustom(F)V", remap = true))
     private float tickratePlayerBobbingOptiFine(float partialTicksWorld) {
         return ((AMixinEntityRenderer) this).partialTicksPlayer(partialTicksWorld);
     }

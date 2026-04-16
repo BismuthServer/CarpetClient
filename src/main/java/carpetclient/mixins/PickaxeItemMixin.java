@@ -17,7 +17,7 @@ import java.util.Set;
 @Mixin(PickaxeItem.class)
 public class PickaxeItemMixin extends ToolItem {
 
-    protected PickaxeItemMixin(float attackDamageIn, float attackSpeedIn, ToolMaterial materialIn, Set<Block> effectiveBlocksIn) {
+    protected PickaxeItemMixin(float attackDamageIn, float attackSpeedIn, Tier materialIn, Set<Block> effectiveBlocksIn) {
         super(attackDamageIn, attackSpeedIn, materialIn, effectiveBlocksIn);
     }
 

@@ -21,7 +21,7 @@ public class ConfigGUI extends Screen {
     public void showList(GuiConfigList list) {
         this.list = list;
 
-        this.list.updateBounds(this.width, this.height, 39, this.height - 32);
+        this.list.setBounds(this.width, this.height, 39, this.height - 32);
         this.list.initGui();
     }
 

@@ -98,7 +98,7 @@ public class MovingBlockEntityMixin extends BlockEntity implements ITileEntityPi
     private void forceUpdate(float p_184322_1_, CallbackInfo ci, Direction enumfacing, double d0, List<Box> list, Box axisalignedbb, List<Entity> list1, boolean flag, int i, Entity entity, double d1) {
         if (!Config.clipThroughPistons.getValue()) return;
 
-        world.updateEntity(entity, false);
+        world.tickEntity(entity, false);
     }
 
     @Inject(method = "readNbt", at = @At("TAIL"))

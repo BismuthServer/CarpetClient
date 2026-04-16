@@ -17,7 +17,7 @@ public abstract class LivingEntityMixin extends Entity {
         super(worldIn);
     }
 
-    @Redirect(method = "moveEntityWithVelocity", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;isClient:Z", ordinal = 1))
+    @Redirect(method = "moveRelative", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;isClient:Z", ordinal = 1))
     public boolean redirectOnElytraLanded(World world) {
         if (Config.elytraFix.getValue())
             return world.isClient && !((Entity) this instanceof LocalClientPlayerEntity);

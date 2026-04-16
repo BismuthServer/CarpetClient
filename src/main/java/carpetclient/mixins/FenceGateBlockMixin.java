@@ -22,8 +22,8 @@ public class FenceGateBlockMixin extends HorizontalFacingBlock {
     }
 
     // Override to place fence gates mid air
-    @Inject(method = "canSurvive", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "canBePlaced(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)Z", at = @At("HEAD"), cancellable = true)
     public void canPlaceOnOver(World worldIn, BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue((worldIn.getBlockState(pos.down()).getMaterial().isSolid() || Config.relaxedBlockPlacement) && super.canSurvive(worldIn, pos));
+        cir.setReturnValue((worldIn.getBlockState(pos.down()).getMaterial().isSolid() || Config.relaxedBlockPlacement) && super.canBePlaced(worldIn, pos));
     }
 }
