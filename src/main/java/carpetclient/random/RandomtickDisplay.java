@@ -10,8 +10,8 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
+import net.ornithemc.osl.networking.api.PacketBuffer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class RandomtickDisplay {
     private static final String gold = "\u00a76", red = "\u00a74", green = "\u00a72", pushe = "\u00a76Pushes", pull = "\u00a76Pull";
     private static ArrayList<BlockPos> chunks = new ArrayList<>();
 
-    public static void processPacket(PacketByteBuf data) {
+    public static void processPacket(PacketBuffer data) {
         NbtCompound nbt;
         try {
             nbt = data.readNbtCompound();
@@ -65,7 +65,7 @@ public class RandomtickDisplay {
     }
 
     public static void startStopRecording(boolean start) {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = new PacketBuffer(Unpooled.buffer());
         sender.writeInt(CarpetPluginChannel.RANDOMTICK_DISPLAY);
         sender.writeBoolean(start);
         CarpetPluginChannel.packatSender(sender);

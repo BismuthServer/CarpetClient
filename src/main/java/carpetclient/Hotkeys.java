@@ -3,13 +3,14 @@ package carpetclient;
 import carpetclient.gui.chunkgrid.GuiChunkGrid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
 import net.ornithemc.osl.keybinds.api.KeyBindingEvents;
+import net.ornithemc.osl.networking.api.PacketBuffer;
+import net.ornithemc.osl.networking.api.PacketBuffers;
+
 import org.lwjgl.input.Keyboard;
 
 import carpetclient.pluginchannel.CarpetPluginChannel;
-import io.netty.buffer.Unpooled;
 
 /*
 Hotkey class to implement hotkeys for the carpet client. Changeable in the hotkey menu ingame.
@@ -53,7 +54,7 @@ public class Hotkeys {
         } else if (toggleBoundingBoxMarkers.consumeClick()) {
             Config.boundingBoxMarkers = !Config.boundingBoxMarkers;
             if (Config.boundingBoxMarkers) {
-                PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+                PacketBuffer sender = PacketBuffers.make();
                 sender.writeInt(CarpetPluginChannel.BOUNDINGBOX_MARKERS);
 
                 CarpetPluginChannel.packatSender(sender);
@@ -61,7 +62,7 @@ public class Hotkeys {
             Util.printToChat("Bounding Box Markers: " + (Config.boundingBoxMarkers ? "ON" : "OFF") );
         } else if (toggleVillageMarkers.consumeClick()) {
             Config.villageMarkers = !Config.villageMarkers;
-            PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+            PacketBuffer sender = PacketBuffers.make();
             sender.writeInt(CarpetPluginChannel.VILLAGE_MARKERS);
             sender.writeBoolean(Config.villageMarkers);
 

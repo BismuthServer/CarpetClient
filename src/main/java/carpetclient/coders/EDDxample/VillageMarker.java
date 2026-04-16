@@ -11,10 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.village.Village;
 import net.minecraft.world.village.VillageDoor;
+import net.ornithemc.osl.networking.api.PacketBuffer;
 
 /*
 Code from EDDxample used to render Village markers.
@@ -162,7 +162,7 @@ public class VillageMarker {
         return list;
     }
 
-    public static void villageUpdate(PacketByteBuf data) {
+    public static void villageUpdate(PacketBuffer data) {
         List<Village> villageList = Lists.<Village>newArrayList();
         NbtCompound nbt = null;
         try {
@@ -186,7 +186,7 @@ public class VillageMarker {
         }
     }
     
-    public static void largeVillageUpdate(PacketByteBuf data) {
+    public static void largeVillageUpdate(PacketBuffer data) {
         int count = data.readUnsignedByte() + 1;
         for (int i = 0; i < count; i++) {
             NbtCompound villageTag;

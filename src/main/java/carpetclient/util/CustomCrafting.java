@@ -10,7 +10,6 @@ import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeCollection;
 import net.minecraft.client.crafting.ClientRecipeBook;
@@ -24,10 +23,10 @@ import net.minecraft.crafting.recipe.ShapelessRecipe;
 import net.minecraft.item.CreativeModeTab;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.JsonUtils;
+import net.ornithemc.osl.networking.api.PacketBuffer;
+import net.ornithemc.osl.networking.api.PacketBuffers;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -41,7 +40,7 @@ public class CustomCrafting {
      *
      * @param data
      */
-    public static void addCustomRecipes(PacketByteBuf data) {
+    public static void addCustomRecipes(PacketBuffer data) {
         NbtCompound nbt;
         try {
             nbt = data.readNbtCompound();
@@ -99,7 +98,7 @@ public class CustomCrafting {
      * Packets can't be sent at the same time or they will create issues in the packet reader, this system is in place to create artificial delay.
      */
     private static void sendConfirmationPacketThatUpdatesCanBeReceived() {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.CUSTOM_RECIPES);
         CarpetPluginChannel.packatSender(sender);
     }

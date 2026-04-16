@@ -5,13 +5,13 @@ import carpetclient.mixins.IWorld;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MovingBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.ornithemc.osl.networking.api.PacketBuffer;
 
 import java.util.Iterator;
 
@@ -33,7 +33,7 @@ public class PistonFix {
      *
      * @param data
      */
-    public static void processPacket(PacketByteBuf data) {
+    public static void processPacket(PacketBuffer data) {
         if (!Config.clipThroughPistons.getValue()) return;
 
         if (pistonFix) {

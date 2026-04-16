@@ -4,7 +4,7 @@ import carpetclient.Config;
 import carpetclient.mixinInterface.AMixinTimer;
 import carpetclient.mixins.IMinecraft;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketByteBuf;
+import net.ornithemc.osl.networking.api.PacketBuffer;
 
 /**
  * Tick rate method to edit the clients tick rate changes based on the servers tick rate.
@@ -36,7 +36,7 @@ public class TickRate {
      *
      * @param data Data from the server sent when tick rates are changed.
      */
-    public static void setTickRate(PacketByteBuf data) {
+    public static void setTickRate(PacketBuffer data) {
         Config.tickRate = data.readFloat();
         setTickRate(Config.tickRate);
     }

@@ -1,9 +1,7 @@
 package carpetclient.coders.zerox53ee71ebe11e;
 
-import carpetclient.Util;
 import carpetclient.gui.chunkgrid.GuiChunkGrid;
 import carpetclient.pluginchannel.CarpetPluginChannel;
-import io.netty.buffer.Unpooled;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.*;
@@ -13,7 +11,8 @@ import java.util.Map.Entry;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
+import net.ornithemc.osl.networking.api.PacketBuffer;
+import net.ornithemc.osl.networking.api.PacketBuffers;
 
 /**
  * Class made by 0x53ee71ebe11e for the Chunk Debug tool. Don't ask me how it works.
@@ -902,7 +901,7 @@ public class Chunkdata implements Serializable {
     private static Chunkdata instance;
 
     private static void startStopRecording(boolean start) {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.CHUNK_LOGGER);
         sender.writeBoolean(start);
         CarpetPluginChannel.packatSender(sender);
@@ -923,7 +922,7 @@ public class Chunkdata implements Serializable {
     private static final int PACKET_STACKTRACE = 1;
     private static final int PACKET_ACCESS_DENIED = 2;
 
-    public static void processPacket(PacketByteBuf data) {
+    public static void processPacket(PacketBuffer data) {
         int type = data.readInt();
 
         NbtCompound nbt;

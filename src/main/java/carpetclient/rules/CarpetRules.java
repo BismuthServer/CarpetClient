@@ -5,21 +5,20 @@ import carpetclient.gui.ConfigGUI;
 import carpetclient.pluginchannel.CarpetPluginChannel;
 import carpetclient.random.RandomtickDisplay;
 import carpetclient.util.BiObservable;
-import io.netty.buffer.Unpooled;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
+import net.ornithemc.osl.networking.api.PacketBuffer;
+import net.ornithemc.osl.networking.api.PacketBuffers;
 
 /*
 Carpet rules that is recieved from the server, stored here for use to update GUI and other client related options.
  */
 public class CarpetRules {
-    private static PacketByteBuf data;
+    private static PacketBuffer data;
     private static final Map<String, CarpetSettingEntry> rules;
 
     private static final int CHANGE_RULE = 0;
@@ -36,7 +35,7 @@ public class CarpetRules {
      *
      * @param data The data that is recieved from the server.
      */
-    public static void setAllRules(PacketByteBuf data) {
+    public static void setAllRules(PacketBuffer data) {
         CarpetRules.data = data;
         decodeData();
         editClientRules();
@@ -76,7 +75,7 @@ public class CarpetRules {
      *
      * @param data the data related to a single rule.
      */
-    public static void ruleData(PacketByteBuf data) {
+    public static void ruleData(PacketBuffer data) {
         String rule = data.readString(100);
         int infoType = data.readInt();
         String text = data.readString(10000);
@@ -102,7 +101,7 @@ public class CarpetRules {
     }
 
     public static void requestUpdate() {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.GUI_ALL_DATA);
 
         CarpetPluginChannel.packatSender(sender);
@@ -114,7 +113,7 @@ public class CarpetRules {
      * @param rule the rule name.
      */
     public static void ruleChange(String rule) {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.RULE_REQUEST);
         sender.writeInt(CHANGE_RULE);
         sender.writeString(rule);
@@ -129,7 +128,7 @@ public class CarpetRules {
      * @param text the text to change the rule with
      */
     public static void textRuleChange(String rule, String text) {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.RULE_REQUEST);
         sender.writeInt(CHANGE_TEXT_RULE);
         sender.writeString(rule);
@@ -144,7 +143,7 @@ public class CarpetRules {
      * @param rule the rule name.
      */
     public static void resetRule(String rule) {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.RULE_REQUEST);
         sender.writeInt(RESET_RULE);
         sender.writeString(rule);
@@ -158,7 +157,7 @@ public class CarpetRules {
      * @param rule the rule name.
      */
     public static void ruleTipRequest(String rule) {
-        PacketByteBuf sender = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer sender = PacketBuffers.make();
         sender.writeInt(CarpetPluginChannel.RULE_REQUEST);
         sender.writeInt(REQUEST_RULE_TIP);
         sender.writeString(rule);

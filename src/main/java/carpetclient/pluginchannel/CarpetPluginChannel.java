@@ -6,7 +6,10 @@ import carpetclient.coders.zerox53ee71ebe11e.Chunkdata;
 import carpetclient.bugfix.PistonFix;
 import carpetclient.random.RandomtickDisplay;
 import carpetclient.util.CustomCrafting;
-import net.minecraft.network.PacketByteBuf;
+import net.ornithemc.osl.core.api.util.NamespacedIdentifier;
+import net.ornithemc.osl.networking.api.ChannelIdentifiers;
+import net.ornithemc.osl.networking.api.ChannelRegistry;
+import net.ornithemc.osl.networking.api.PacketBuffer;
 import net.ornithemc.osl.networking.api.client.ClientPlayNetworking;
 import carpetclient.coders.EDDxample.ShowBoundingBoxes;
 import carpetclient.coders.EDDxample.VillageMarker;
@@ -17,8 +20,8 @@ import carpetclient.rules.TickRate;
 Plugin channel class to implement a client server communication between carpet client and carpet server.
  */
 public class CarpetPluginChannel {
-    public static final String CARPET_CHANNEL_NAME = "carpet:client";
-//    public static final ImmutableList CARPET_PLUGIN_CHANNEL = ImmutableList.of(CARPET_CHANNEL_NAME);
+    public static final NamespacedIdentifier CARPET_CLIENT_CHANNEL = ChannelIdentifiers.from("carpet", "client");
+    public static final NamespacedIdentifier CARPET_MINE_CHANNEL = ChannelIdentifiers.from("carpet", "mine");
 
     public static final int GUI_ALL_DATA = 0;
     public static final int RULE_REQUEST = 1;
@@ -31,12 +34,16 @@ public class CarpetPluginChannel {
     public static final int CUSTOM_RECIPES = 8;
 
     public static void init() {
-        ClientPlayNetworking.registerListener(CARPET_CHANNEL_NAME, (minecraft, handler, data) -> {
-            data = PacketSplitter.receive(CARPET_CHANNEL_NAME, data);
+        ChannelRegistry.register(CARPET_CLIENT_CHANNEL);
+        ChannelRegistry.register(CARPET_MINE_CHANNEL, false, true);
+
+        ClientPlayNetworking.registerListener(CARPET_CLIENT_CHANNEL, (ctx, data) -> {
+            ctx.ensureOnMainThread();
+
+            data = PacketSplitter.receive(CARPET_CLIENT_CHANNEL, data);
             if (data != null) {
                 handleData(data);
             }
-            return true;
         });
     }
 
@@ -45,7 +52,7 @@ public class CarpetPluginChannel {
      *
      * @param data Data that is recieved from the server.
      */
-    private static void handleData(PacketByteBuf data) {
+    private static void handleData(PacketBuffer data) {
         int type = data.readInt();
 
         if (GUI_ALL_DATA == type) {
@@ -82,7 +89,7 @@ public class CarpetPluginChannel {
      *
      * @param data The data that is being sent to the server.
      */
-    public static void packatSender(PacketByteBuf data) {
-        PacketSplitter.send(CARPET_CHANNEL_NAME, data, false);
+    public static void packatSender(PacketBuffer data) {
+        PacketSplitter.send(CARPET_CLIENT_CHANNEL, data, false);
     }
 }

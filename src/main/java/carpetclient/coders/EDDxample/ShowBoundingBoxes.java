@@ -4,10 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.structure.StructureBox;
+import net.ornithemc.osl.networking.api.PacketBuffer;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -142,7 +143,7 @@ public class ShowBoundingBoxes {
      *
      * @param data Data from the server.
      */
-    public static void getStructureComponent(PacketByteBuf data) {
+    public static void getStructureComponent(PacketBuffer data) {
         NbtCompound nbt = null;
         try {
             nbt = data.readNbtCompound();
@@ -170,7 +171,7 @@ public class ShowBoundingBoxes {
         }
     }
     
-    public static void largeBoundingBoxStructuresStart(PacketByteBuf data) {
+    public static void largeBoundingBoxStructuresStart(PacketBuffer data) {
         NbtCompound nbt = null;
         try {
             nbt = data.readNbtCompound();
@@ -187,7 +188,7 @@ public class ShowBoundingBoxes {
         }
     }
     
-    public static void largeBoundingBoxStructures(PacketByteBuf data) {
+    public static void largeBoundingBoxStructures(PacketBuffer data) {
         int count = data.readUnsignedByte() + 1;
         for (int i = 0; i < count; i++) {
             NbtCompound nbt = null;

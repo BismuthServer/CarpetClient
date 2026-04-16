@@ -3,7 +3,7 @@ package carpetclient.mixins;
 import carpetclient.Config;
 import carpetclient.Hotkeys;
 import carpetclient.coders.skyrising.PacketSplitter;
-import io.netty.buffer.Unpooled;
+import carpetclient.pluginchannel.CarpetPluginChannel;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.client.ClientPlayerInteractionManager;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,6 @@ import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.inventory.menu.ActionType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerHandActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerUseBlockC2SPacket;
@@ -25,6 +24,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.InteractionHand;
+import net.ornithemc.osl.networking.api.PacketBuffer;
+import net.ornithemc.osl.networking.api.PacketBuffers;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -224,7 +226,7 @@ public class ClientPlayerInteractionManagerMixin {
             connection.sendPacket(new PlayerHandActionC2SPacket(PlayerHandActionC2SPacket.Action.START_DESTROY_BLOCK, loc, face));
             return;
         }
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer data = PacketBuffers.make();
         BlockState iblockstate = this.minecraft.world.getBlockState(loc);
         boolean instaMine = iblockstate.getMiningSpeed(this.minecraft.player, this.minecraft.player.world, loc) >= 1.0F;
         data.writeBoolean(true);
@@ -233,7 +235,7 @@ public class ClientPlayerInteractionManagerMixin {
         data.writeBoolean(instaMine);
         data.writeBoolean(Config.carefulBreak.getValue());
 
-        PacketSplitter.send("carpet:mine", data, true);
+        PacketSplitter.send(CarpetPluginChannel.CARPET_MINE_CHANNEL, data, true);
     }
 
     /**
@@ -249,14 +251,14 @@ public class ClientPlayerInteractionManagerMixin {
             return;
         }
 
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer data = PacketBuffers.make();
         data.writeBoolean(false);
         data.writeBlockPos(loc);
         data.writeByte(face.getId());
         data.writeBoolean(true);
         data.writeBoolean(Config.carefulBreak.getValue());
 
-        PacketSplitter.send("carpet:mine", data, true);
+        PacketSplitter.send(CarpetPluginChannel.CARPET_MINE_CHANNEL, data, true);
     }
 
 }
